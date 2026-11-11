@@ -1,0 +1,115 @@
+ÁUDIOS GRAVADOS DOS CARDS
+=========================
+Salve aqui a gravação de cada card com o código do fólio como nome.
+Formatos aceitos: .mp3 (recomendado), .m4a, .ogg ou .wav
+Exemplo: a narração de "A abertura do Portal Negro" deve se chamar 4-02.mp3
+
+O que gravar em cada card, nesta ordem (é a ordem em que a legenda acompanha):
+  1. Título e ano  (ex.: "A abertura do Portal Negro. Ano zero.")
+  2. O texto do card
+  3. Os envolvidos (opcional)
+  4. A nota de Zeugades ou da Liga, se o card tiver uma
+
+Dicas:
+- MP3 mono, 96 a 128 kbps, deixa cada card com cerca de 0,5 a 1 MB.
+- Use só letras minúsculas na extensão (.mp3) e o nome exato do fólio;
+  em servidores de hospedagem "4-02.MP3" e "4-02.mp3" são arquivos diferentes.
+- Cards sem gravação continuam sendo lidos pela voz do navegador.
+
+CÓDIGO | ANO              |  CARD
+-------+------------------+----------------------------------------
+1-01  |  Era primordial   |  O Império Negro
+
+1-02  |  Era primordial   |  A ordenação de Azeroth
+
+1-03  |  Era primordial   |  A criação da Legião Ardente
+
+1-04  |  +20.000 a.P.     |  Galakrond e os cinco Aspectos
+
+1-05  |  ≈ 20.000 a.P.    |  A guerra entre os dragões
+
+1-06  |  ≈ 16.000 a.P.    |  Os trolls contra os aqir
+
+1-07  |  +10.000 a.P.     |  O Império Mogu e a revolta pandaren
+
+1-08  |  +10.000 a.P.     |  A ascensão dos elfos noturnos
+
+2-01  |  ≈ 10.000 a.P.    |  A Guerra dos Antigos
+
+2-02  |  ≈ 10.000 a.P.    |  A traição de Neltharion
+
+2-03  |  ≈ 10.000 a.P.    |  A Grande Cisão e o nascimento dos naga
+
+2-04  |  ≈ 10.000 a.P.    |  Pandária desaparece nas névoas
+
+2-05  |  ≈ 10.000 a.P.    |  A segunda Nascente e a Árvore do Mundo
+
+2-06  |  ≈ 6.800 a.P.     |  A fundação de Quel’Thalas
+
+3-01  |  ≈ 2.800 a.P.     |  Arathor e as Guerras Trolls
+
+3-02  |  Após 2.800 a.P.  |  Dalaran e os Guardiões de Tirisfal
+
+3-03  |  Após 2.800 a.P.  |  Os sete reinos humanos
+
+3-04  |  ≈ 975 a.P.       |  A Guerra das Areias Cambiantes
+
+3-05  |  ≈ 823 a.P.       |  Aegwynn enfrenta Sargeras
+
+3-06  |  ≈ 230 a.P.       |  A Guerra dos Três Martelos
+
+4-01  |  Antes do Ano 0   |  A corrupção dos orcs e a primeira Horda
+
+4-02  |  Ano 0            |  A abertura do Portal Negro
+
+4-03  |  Anos 0–4         |  A morte de Medivh em Karazhan
+
+4-04  |  ≈ Ano 4          |  A queda de Ventobravo
+
+4-05  |  Anos 4–6         |  A Aliança de Lordaeron e os primeiros paladinos
+
+4-06  |  ≈ Ano 6          |  A invasão do norte
+
+4-07  |  ≈ Ano 6          |  A vitória da Aliança
+
+4-08  |  ≈ Ano 8          |  A destruição de Draenor
+
+4-09  |  Anos 8–20        |  Ventobravo reerguida e a Irmandade Défias
+
+4-10  |  Anos 8–20        |  O primeiro Lich Rei e o nascimento do Flagelo
+
+4-11  |  ≈ Ano 19         |  Thrall liberta os orcs e refunda a Horda
+
+5-01  |  ≈ Ano 20         |  A praga de Lordaeron e o expurgo de Stratholme
+
+5-02  |  ≈ Ano 20         |  Gélido Lamento e a queda de Lordaeron
+
+5-03  |  ≈ Ano 20         |  A morte de Uther e a queda de Quel’Thalas
+
+5-04  |  ≈ Ano 20         |  A destruição de Dalaran
+
+5-05  |  ≈ Ano 20         |  A travessia da Horda
+
+5-06  |  ≈ Ano 20         |  A morte de Cenarius e o sacrifício de Grom
+
+5-07  |  ≈ Ano 20         |  A libertação de Illidan
+
+5-08  |  ≈ Ano 21         |  A Batalha do Monte Hyjal
+
+6-01  |  ≈ Ano 21         |  Durotar, Orgrimmar e Theramore
+
+6-02  |  ≈ Ano 21         |  O nascimento dos elfos sangrentos
+
+6-03  |  ≈ Ano 21         |  A conquista de Terralém
+
+6-04  |  ≈ Ano 21         |  A rebelião de Sylvana
+
+6-05  |  ≈ Ano 21         |  Arthas torna-se o Lich Rei
+
+6-06  |  Anos 21–25       |  Rexxar defende a nova Horda
+
+6-07  |  Anos 21–25       |  Teldrassil e Darnassus
+
+6-08  |  ≈ Ano 25         |  A fundação da Cidade Baixa
+
+6-09  |  ≈ Ano 25         |  O sacrifício de Garek e a entrada na Horda
