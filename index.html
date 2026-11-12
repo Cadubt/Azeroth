@@ -1302,7 +1302,6 @@ document.querySelectorAll('a.za-link, a.za-link-seal').forEach(a => {
     if (/^pt[-_]?BR/i.test(v.lang)) s += 40; else if (/^pt/i.test(v.lang)) s += 20;
     if (isNatural(v)) s += 30; else if (/google/i.test(v.name)) s += 15;
     if (MALE.test(nm(v))) s += 10;
-    if (/antonio/i.test(nm(v))) s += 3;
     return s;
   }
   function label(v){
@@ -1315,11 +1314,11 @@ document.querySelectorAll('a.za-link, a.za-link-seal').forEach(a => {
     return `${n} · ${tags.join(' · ')}`;
   }
   const sel = document.getElementById('vp-voice'), tip = document.getElementById('vp-tip');
-  let warnMsg = '';
+  const EXCLUIDAS = /antonio/i;      // vozes retiradas por não funcionarem
   if (!synth) document.getElementById('pl-voice').hidden = true;
   function listVoices(){
     if (!synth) return [];
-    const all = synth.getVoices();
+    const all = synth.getVoices().filter(v => !EXCLUIDAS.test(nm(v)));
     const pt = all.filter(v => /^pt/i.test(v.lang));
     return (pt.length ? pt : all).slice().sort((a, b) => score(b) - score(a) || a.name.localeCompare(b.name));
   }
@@ -1331,8 +1330,8 @@ document.querySelectorAll('a.za-link, a.za-link-seal').forEach(a => {
     sel.innerHTML = vs.map(v => `<option value="${v.voiceURI.replace(/"/g,'&quot;')}">${label(v).replace(/</g,'&lt;')}</option>`).join('');
     sel.value = voice.voiceURI;
     const anyPt = vs.some(v => /^pt/i.test(v.lang)), anyNat = vs.some(isNatural);
-    tip.textContent = warnMsg || (!anyPt ? 'Este navegador não tem vozes em português. No Microsoft Edge ou no Chrome a leitura fica bem melhor.'
-                    : !anyNat ? 'Dica: no Microsoft Edge aparecem vozes “natural”, muito mais realistas (Antonio, Francisca, Thalita).' : '');
+    tip.textContent = !anyPt ? 'Este navegador não tem vozes em português. No Microsoft Edge ou no Chrome a leitura fica bem melhor.'
+                    : !anyNat ? 'Dica: no Microsoft Edge aparecem vozes “natural”, muito mais realistas (Francisca, Thalita).' : '';
   }
   pickVoice(); if (synth && synth.onvoiceschanged !== undefined) synth.onvoiceschanged = pickVoice;
 
@@ -1436,48 +1435,20 @@ document.querySelectorAll('a.za-link, a.za-link-seal').forEach(a => {
 
   // Fala um trecho; cada fala tem um id para que trocar a voz no meio não pule frases
   let curSeg = null, uttId = 0, lastCancel = 0;
-  const plainOnly = new Set();       // vozes que só funcionam com velocidade/tom padrão
-  const broken = new Set();          // vozes que não responderam neste navegador
   function cancelAll(){ uttId++; synth.cancel(); lastCancel = performance.now(); }
-  function fallbackVoice(not){
-    const vs = listVoices().filter(v => v.voiceURI !== not && !broken.has(v.voiceURI));
-    return vs.find(v => v.localService && /^pt/i.test(v.lang)) || vs.find(v => /^pt/i.test(v.lang)) || vs[0] || null;
-  }
-  function reportVoice(v, err, fb){
-    const msg = fb ? `A voz “${label(v).split(' · ')[0]}” não respondeu neste navegador (${err}). Usando “${label(fb).split(' · ')[0]}” por enquanto — tente outra voz da lista ou recarregue a página.`
-                   : `A voz “${label(v).split(' · ')[0]}” não respondeu neste navegador (${err}).`;
-    warnMsg = msg; tip.textContent = msg; console.warn('[Narração]', msg);
-  }
-  // Fala um trecho com proteção para as vozes online do Edge/Chrome:
-  // 1ª tentativa normal → 2ª com velocidade/tom padrão → 3ª com uma voz local.
-  function say(text, my, attempt = 0, onDone){
-    if (attempt === 0 && voice && broken.has(voice.voiceURI)) attempt = 2;   // voz já falhou: vai direto para a reserva
+  // Fala direto, sem tentativas de reserva nem espera de verificação: o som começa na hora
+  function say(text, my, onDone){
     const id = ++uttId;
-    const v = attempt >= 2 ? fallbackVoice(voice && voice.voiceURI) : voice;
-    const plain = attempt === 1 || (v && plainOnly.has(v.voiceURI));
+    const v = voice;
     const u = new SpeechSynthesisUtterance(text);
     u.lang = v ? v.lang : 'pt-BR'; if (v) u.voice = v;
-    u.rate = plain ? Math.min(Math.max(rate, .8), 1.2) : rate;
-    u.pitch = plain ? 1 : pitch;
-    let started = false, settled = false;
+    u.rate = rate; u.pitch = pitch;
+    let settled = false;
     const live = () => id === uttId && (onDone ? true : my === token);
     const done = () => { if (settled) return; settled = true; onDone ? onDone() : next(my); };
-    const fail = err => {
-      if (settled || !live()) return; settled = true; clearTimeout(dog);
-      if (attempt === 0){ cancelAll(); setTimeout(() => live() || id + 1 === uttId ? say(text, my, 1, onDone) : 0, 150); return; }
-      if (attempt === 1){
-        if (v) broken.add(v.voiceURI);
-        const fb = fallbackVoice(v && v.voiceURI); reportVoice(v, err, fb);
-        cancelAll(); if (fb) { setTimeout(() => say(text, my, 2, onDone), 150); return; }
-      }
-      onDone ? onDone() : next(my);
-    };
-    u.onstart = () => { started = true; clearTimeout(dog); if (attempt === 1 && v) plainOnly.add(v.voiceURI); };
-    u.onend = () => { if (!live()) return; clearTimeout(dog); started ? done() : fail('sem som'); };
-    u.onerror = e => { if (!live() || e.error === 'interrupted' || e.error === 'canceled') return; clearTimeout(dog); fail(e.error || 'erro'); };
-    // vozes online às vezes ficam mudas sem avisar: se não começar em 4s, tenta de novo
-    const dog = setTimeout(() => { if (!started && live() && !synth.paused) fail('sem resposta'); }, 4000);
-    const gap = Math.max(0, 140 - (performance.now() - lastCancel));   // dar tempo ao motor de voz depois de um cancel
+    u.onend = () => { if (live()) done(); };
+    u.onerror = e => { if (!live() || e.error === 'interrupted' || e.error === 'canceled') return; done(); };
+    const gap = Math.max(0, 140 - (performance.now() - lastCancel));   // o motor engasga se falarmos no mesmo instante do cancel
     setTimeout(() => { if (live()) synth.speak(u); }, gap);
   }
   // Se o visitante muda a voz durante a leitura, a frase atual recomeça já com a nova voz
@@ -1504,7 +1475,7 @@ document.querySelectorAll('a.za-link, a.za-link-seal').forEach(a => {
   document.addEventListener('click', e => { if (!panel.hidden && !e.target.closest('#player')) togglePanel(false); });
   sel.addEventListener('change', () => {
     const v = synth && synth.getVoices().find(x => x.voiceURI === sel.value);
-    if (v){ voice = v; broken.delete(v.voiceURI); plainOnly.delete(v.voiceURI); vstore.set('tts-voice', v.voiceURI); warnMsg = ''; tip.textContent = ''; applyNow(); }
+    if (v){ voice = v; vstore.set('tts-voice', v.voiceURI); tip.textContent = ''; applyNow(); }
   });
   rIn.addEventListener('input', () => { rate = +rIn.value; vstore.set('tts-rate', rate); showVals(); });
   pIn.addEventListener('input', () => { pitch = +pIn.value; vstore.set('tts-pitch', pitch); showVals(); });
@@ -1512,7 +1483,6 @@ document.querySelectorAll('a.za-link, a.za-link-seal').forEach(a => {
   document.getElementById('vp-reset').addEventListener('click', () => {
     rate = DEF.rate; pitch = DEF.pitch; vstore.set('tts-rate', rate); vstore.set('tts-pitch', pitch);
     try { localStorage.removeItem('tts-voice'); } catch(e){}
-    broken.clear(); plainOnly.clear(); warnMsg = '';
     pickVoice(); showVals(); applyNow();
   });
   document.getElementById('vp-test').addEventListener('click', () => {
@@ -1520,7 +1490,7 @@ document.querySelectorAll('a.za-link, a.za-link-seal').forEach(a => {
     if (mode === 'tts' && synth.speaking){ applyNow(); return; }
     if (mode === 'rec') return;
     cancelAll(); pickVoice();
-    say('Que a Luz guie seus passos, aventureiro. Esta é a voz que narrará as crônicas de Azeroth.', token, 0, () => {});
+    say('Que a Luz guie seus passos, aventureiro. Esta é a voz que narrará as crônicas de Azeroth.', token, () => {});
   });
 
   cards.forEach(card => {
