@@ -56,3 +56,4 @@ CÓDIGO | ANO              |  CARD
 6-07  |  Anos 21–25       |  Teldrassil e Darnassus
 6-08  |  ≈ Ano 25         |  A fundação da Cidade Baixa
 6-09  |  ≈ Ano 25         |  O sacrifício de Garek e a entrada na Horda
+6-10  |  ≈ Ano 25         |  O pequeno rei e a sombra de Onyxia
