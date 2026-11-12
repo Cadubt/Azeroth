@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teste de Voz</title>
+<style>
+:root{--bg:#120d08;--fg:#f0e4c8;--dim:#bfae8c;--gold:#d9a84a;--ok:#7fd36a;--bad:#ff7a5c}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,Segoe UI,sans-serif;padding:20px 16px}
+h1{font-size:1.3rem;color:var(--gold);margin:0 0 4px}
+p{margin:4px 0 14px;color:var(--dim)}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+button{background:#1f1810;color:var(--fg);border:1px solid #5a4528;padding:9px 12px;border-radius:3px;cursor:pointer;font:inherit}
+button:hover{border-color:var(--gold)}
+select{background:#1f1810;color:var(--fg);border:1px solid #5a4528;padding:8px;font:inherit;max-width:100%}
+#log{background:#0a0705;border:1px solid #3a2c1c;padding:10px;height:340px;overflow:auto;font:13px/1.45 Consolas,monospace;white-space:pre-wrap}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.inf{color:var(--dim)}
+#info{font:13px Consolas,monospace;color:var(--dim)}
+</style>
+</head>
+<body>
+<h1>Teste da voz do narrador</h1>
+<p>Escolha a voz e clique nos testes, um de cada vez. O registro abaixo mostra o que o navegador respondeu.</p>
+<div id="info"></div>
+<div class="row"><select id="v"></select></div>
+<div class="row">
+  <button data-t="1">1 · Simples</button>
+  <button data-t="2">2 · Com idioma pt-BR</button>
+  <button data-t="3">3 · Tom 0,92</button>
+  <button data-t="4">4 · Cancelar e falar</button>
+  <button data-t="5">5 · Texto do card</button>
+  <button data-t="6">6 · Sem escolher voz</button>
+  <button id="clr">Limpar</button>
+</div>
+<div id="log"></div>
+<script>
+const s = window.speechSynthesis, sel = document.getElementById('v'), logEl = document.getElementById('log');
+const t0 = performance.now();
+function log(msg, cls='inf'){ const d=document.createElement('div'); d.className=cls; d.textContent=`[${((performance.now()-t0)/1000).toFixed(2)}s] ${msg}`; logEl.appendChild(d); logEl.scrollTop=1e9; }
+document.getElementById('info').textContent = `Navegador: ${navigator.userAgent}\nEndereço: ${location.protocol}  ·  Online: ${navigator.onLine}`;
+function fill(){
+  const vs = s.getVoices(); const cur = sel.value;
+  sel.innerHTML = vs.map((v,i)=>`<option value="${i}">${v.name} — ${v.lang}${v.localService?' (local)':' (online)'}${v.default?' [padrão]':''}</option>`).join('');
+  const a = vs.findIndex(v=>/antonio/i.test(v.name)); if (cur) sel.value=cur; else if (a>=0) sel.value=a;
+  log(`${vs.length} vozes carregadas; Antonio ${a>=0?'encontrado':'NÃO encontrado'}`);
+}
+fill(); s.onvoiceschanged = fill;
+function run(t){
+  const v = s.getVoices()[+sel.value];
+  const text = t===5 ? 'O Império Negro. Era primordial. Nas eras sem nome, quatro Deuses Antigos se cravaram no mundo como parasitas: Y’Shaarj, C’Thun, Yogg-Saron e N’Zoth.' : 'Olá. Que a Luz guie seus passos, aventureiro.';
+  const u = new SpeechSynthesisUtterance(text);
+  if (t!==6) u.voice = v;
+  if (t===2) u.lang = 'pt-BR';
+  if (t===3){ u.pitch = .92; u.rate = .95; }
+  let started=false;
+  u.onstart = ()=>{ started=true; log(`teste ${t}: COMEÇOU a falar`, 'ok'); };
+  u.onend   = ()=> log(`teste ${t}: terminou ${started?'(ok)':'SEM TER COMEÇADO'}`, started?'ok':'bad');
+  u.onerror = e => log(`teste ${t}: ERRO "${e.error}"`, 'bad');
+  log(`teste ${t}: pedindo fala — voz ${t===6?'(padrão do navegador)':v.name}, lang=${u.lang||'(vazio)'}, tom=${u.pitch}, vel=${u.rate}`);
+  if (t===4){ s.cancel(); s.speak(u); } else s.speak(u);
+  setTimeout(()=>{ if(!started) log(`teste ${t}: 5s sem começar · speaking=${s.speaking} pending=${s.pending} paused=${s.paused}`, 'bad'); }, 5000);
+}
+document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>run(+b.dataset.t));
+document.getElementById('clr').onclick=()=>{ s.cancel(); logEl.innerHTML=''; };
+</script>
+</body>
+</html>

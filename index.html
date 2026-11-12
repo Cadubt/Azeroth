@@ -413,6 +413,28 @@ footer{position:relative;z-index:2;text-align:center;padding:30px 16px 50px;font
 .hero .za-link:hover,.era .za-link:hover{color:var(--gold-hi)}
 .parchment .za-link:hover{color:#8a2a16}
 
+
+/* ===== ESCOLHA DE VOZ ===== */
+.player{position:fixed}
+.player #pl-voice[aria-expanded="true"]{border-color:var(--accent);color:var(--accent)}
+.voice-panel{position:absolute;right:0;bottom:calc(100% + 10px);width:min(340px,calc(100vw - 32px));padding:14px 16px 16px;
+  background:rgba(20,15,10,.97);border:1px solid var(--accent);border-radius:3px;box-shadow:0 14px 40px rgba(0,0,0,.7);
+  font-family:var(--body);color:var(--parch);text-align:left;cursor:default}
+.voice-panel[hidden]{display:none}
+.vp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.vp-head b{font-family:var(--display);font-size:.68rem;letter-spacing:.2em;color:var(--accent)}
+.vp-head button{width:26px;height:26px;font-size:1rem}
+.player .vp-row{display:flex;flex-direction:column;align-items:stretch;gap:6px;margin-top:10px;font-family:var(--body);font-size:1rem;letter-spacing:0;color:var(--parch);white-space:normal;cursor:default}
+.vp-row span{display:flex;justify-content:space-between;font-family:var(--display);font-size:.62rem;letter-spacing:.16em;color:var(--parch-dim)}
+.vp-row em{font-style:normal;color:var(--gold-hi)}
+.vp-row select{width:100%;padding:8px 10px;background:#120d08;color:var(--parch);border:1px solid var(--line);border-radius:2px;font-family:var(--body);font-size:1rem}
+.vp-row select:focus,.vp-row input:focus-visible{outline:1px solid var(--accent)}
+.vp-row input[type=range]{width:100%;accent-color:var(--accent)}
+.vp-tip{margin-top:6px;font-size:.92rem;font-style:italic;color:var(--parch-dim);line-height:1.35}
+.vp-tip:empty{display:none}
+.vp-actions{display:flex;gap:8px;margin-top:14px}
+.player .vp-actions button{flex:1;width:auto;height:auto;padding:8px 6px;font-family:var(--display);font-size:.58rem;letter-spacing:.14em}
+
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01s !important;animation-delay:0s !important;transition-duration:.01s !important}
 }
@@ -479,8 +501,20 @@ footer{position:relative;z-index:2;text-align:center;padding:30px 16px 50px;font
   <div class="bars"><i></i><i></i><i></i><i></i></div>
   <div class="info"><small>ZEUGADES NARRA</small><strong id="pl-title">—</strong></div>
   <label title="Continuar lendo os próximos cards"><input type="checkbox" id="pl-auto" checked><span>Seguir lendo</span></label>
+  <button id="pl-voice" aria-label="Escolher voz" aria-expanded="false" aria-controls="voice-panel" title="Voz do narrador"><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg></button>
   <button id="pl-pause" aria-label="Pausar"><svg viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg></button>
   <button id="pl-stop" aria-label="Parar"><svg viewBox="0 0 24 24"><path d="M5 5h14v14H5z"/></svg></button>
+  <div class="voice-panel" id="voice-panel" hidden>
+    <div class="vp-head"><b>VOZ DO NARRADOR</b><button type="button" id="vp-close" aria-label="Fechar">×</button></div>
+    <label class="vp-row" for="vp-voice"><span>Voz</span>
+      <select id="vp-voice"></select></label>
+    <p class="vp-tip" id="vp-tip"></p>
+    <label class="vp-row" for="vp-rate"><span>Velocidade <em id="vp-rate-v"></em></span>
+      <input type="range" id="vp-rate" min="0.7" max="1.3" step="0.05"></label>
+    <label class="vp-row" for="vp-pitch"><span>Tom <em id="vp-pitch-v"></em></span>
+      <input type="range" id="vp-pitch" min="0.6" max="1.4" step="0.05"></label>
+    <div class="vp-actions"><button type="button" id="vp-test">Ouvir exemplo</button><button type="button" id="vp-reset">Restaurar padrão</button></div>
+  </div>
 </div>
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Imagem ampliada">
   <button class="x" aria-label="Fechar">×</button>
@@ -1128,11 +1162,52 @@ document.querySelectorAll('a.za-link, a.za-link-seal').forEach(a => {
   const cards = [...document.querySelectorAll('.entry .card')];
   let voice = null, current = null, queue = [], token = 0;
 
+  // ----- Voz do narrador: escolha do visitante, guardada no navegador -----
+  const vstore = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } },
+                   set(k, v){ try { localStorage.setItem(k, v); } catch(e){} } };
+  const DEF = { rate: 0.95, pitch: 1 };
+  let rate = parseFloat(vstore.get('tts-rate')) || DEF.rate;
+  let pitch = parseFloat(vstore.get('tts-pitch')) || DEF.pitch;
+  const MALE = /antonio|donato|fabio|f[aá]bio|humberto|julio|j[uú]lio|nicolau|valerio|val[eé]rio|daniel|duarte|ricardo|felipe/i;
+  const FEMALE = /francisca|thalita|brenda|elza|giovanna|leila|leticia|let[ií]cia|manuela|yara|maria|luciana|raquel|fernanda|vit[oó]ria|joana|helena|camila/i;
+  const nm = v => v.name.normalize('NFD').replace(/[\u0300-\u036f]/g, '');   // "António" → "Antonio"
+  const isNatural = v => /natural|online|neural/i.test(nm(v));
+  function score(v){                       // padrão: voz masculina natural em pt-BR (combina com o paladino)
+    let s = 0;
+    if (/^pt[-_]?BR/i.test(v.lang)) s += 40; else if (/^pt/i.test(v.lang)) s += 20;
+    if (isNatural(v)) s += 30; else if (/google/i.test(v.name)) s += 15;
+    if (MALE.test(nm(v))) s += 10;
+    if (/antonio/i.test(nm(v))) s += 3;
+    return s;
+  }
+  function label(v){
+    let n = v.name.replace(/^(Microsoft|Google|Apple)\s+/i, '').replace(/\s*\(Natural\)/i, '').replace(/\s+Online/i, '').replace(/\s+Multilingual/i, ' multilíngue')
+                  .replace(/\s*-\s*(Portuguese|Português|Portugues).*$/i, '').replace(/português do Brasil/i, 'Português').trim();
+    const tags = [];
+    if (isNatural(v)) tags.push('natural');
+    if (MALE.test(nm(v))) tags.push('masc.'); else if (FEMALE.test(nm(v))) tags.push('fem.');
+    tags.push(/^pt[-_]?BR/i.test(v.lang) ? 'BR' : /^pt/i.test(v.lang) ? 'PT' : v.lang);
+    return `${n} · ${tags.join(' · ')}`;
+  }
+  const sel = document.getElementById('vp-voice'), tip = document.getElementById('vp-tip');
+  let warnMsg = '';
+  if (!synth) document.getElementById('pl-voice').hidden = true;
+  function listVoices(){
+    if (!synth) return [];
+    const all = synth.getVoices();
+    const pt = all.filter(v => /^pt/i.test(v.lang));
+    return (pt.length ? pt : all).slice().sort((a, b) => score(b) - score(a) || a.name.localeCompare(b.name));
+  }
   function pickVoice(){
-    if (!synth) return;
-    const vs = synth.getVoices();
-    const pt = vs.filter(v => /^pt[-_]?BR/i.test(v.lang)) .concat(vs.filter(v => /^pt/i.test(v.lang)));
-    voice = pt.find(v => /natural|online|google|francisca|antonio|daniel|thalita/i.test(v.name)) || pt[0] || null;
+    const vs = listVoices();
+    if (!vs.length) return;
+    const saved = vstore.get('tts-voice');
+    voice = vs.find(v => v.voiceURI === saved) || vs[0];
+    sel.innerHTML = vs.map(v => `<option value="${v.voiceURI.replace(/"/g,'&quot;')}">${label(v).replace(/</g,'&lt;')}</option>`).join('');
+    sel.value = voice.voiceURI;
+    const anyPt = vs.some(v => /^pt/i.test(v.lang)), anyNat = vs.some(isNatural);
+    tip.textContent = warnMsg || (!anyPt ? 'Este navegador não tem vozes em português. No Microsoft Edge ou no Chrome a leitura fica bem melhor.'
+                    : !anyNat ? 'Dica: no Microsoft Edge aparecem vozes “natural”, muito mais realistas (Antonio, Francisca, Thalita).' : '');
   }
   pickVoice(); if (synth && synth.onvoiceschanged !== undefined) synth.onvoiceschanged = pickVoice;
 
@@ -1167,7 +1242,7 @@ document.querySelectorAll('a.za-link, a.za-link-seal').forEach(a => {
   function clearMarks(){ document.querySelectorAll('.sent.now').forEach(e => e.classList.remove('now')); }
 
   function stop(){
-    token++; if (synth) synth.cancel(); rec.pause(); rec.onended = rec.ontimeupdate = null; queue = []; mode = null;
+    token++; if (synth){ uttId++; synth.cancel(); lastCancel = performance.now(); } rec.pause(); rec.onended = rec.ontimeupdate = null; queue = []; mode = null;
     if (current) current.classList.remove('reading');
     current = null; clearMarks(); player.classList.remove('show','paused');
     document.dispatchEvent(new Event('narrate:stop'));
@@ -1231,13 +1306,97 @@ document.querySelectorAll('a.za-link, a.za-link-seal').forEach(a => {
     if (!seg){ finish(my); return; }
     if (seg.el) seg.el.classList.add('now');
     document.dispatchEvent(new CustomEvent('narrate:seg', {detail: seg.text}));
-    const u = new SpeechSynthesisUtterance(seg.text);
-    u.lang = 'pt-BR'; if (voice) u.voice = voice;
-    u.rate = .95; u.pitch = .9;
-    u.onend = () => next(my);
-    u.onerror = e => { if (e.error !== 'interrupted' && e.error !== 'canceled') next(my); };
-    synth.speak(u);
+    curSeg = seg; say(seg.text, my);
   }
+
+  // Fala um trecho; cada fala tem um id para que trocar a voz no meio não pule frases
+  let curSeg = null, uttId = 0, lastCancel = 0;
+  const plainOnly = new Set();       // vozes que só funcionam com velocidade/tom padrão
+  const broken = new Set();          // vozes que não responderam neste navegador
+  function cancelAll(){ uttId++; synth.cancel(); lastCancel = performance.now(); }
+  function fallbackVoice(not){
+    const vs = listVoices().filter(v => v.voiceURI !== not && !broken.has(v.voiceURI));
+    return vs.find(v => v.localService && /^pt/i.test(v.lang)) || vs.find(v => /^pt/i.test(v.lang)) || vs[0] || null;
+  }
+  function reportVoice(v, err, fb){
+    const msg = fb ? `A voz “${label(v).split(' · ')[0]}” não respondeu neste navegador (${err}). Usando “${label(fb).split(' · ')[0]}” por enquanto — tente outra voz da lista ou recarregue a página.`
+                   : `A voz “${label(v).split(' · ')[0]}” não respondeu neste navegador (${err}).`;
+    warnMsg = msg; tip.textContent = msg; console.warn('[Narração]', msg);
+  }
+  // Fala um trecho com proteção para as vozes online do Edge/Chrome:
+  // 1ª tentativa normal → 2ª com velocidade/tom padrão → 3ª com uma voz local.
+  function say(text, my, attempt = 0, onDone){
+    if (attempt === 0 && voice && broken.has(voice.voiceURI)) attempt = 2;   // voz já falhou: vai direto para a reserva
+    const id = ++uttId;
+    const v = attempt >= 2 ? fallbackVoice(voice && voice.voiceURI) : voice;
+    const plain = attempt === 1 || (v && plainOnly.has(v.voiceURI));
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = v ? v.lang : 'pt-BR'; if (v) u.voice = v;
+    u.rate = plain ? Math.min(Math.max(rate, .8), 1.2) : rate;
+    u.pitch = plain ? 1 : pitch;
+    let started = false, settled = false;
+    const live = () => id === uttId && (onDone ? true : my === token);
+    const done = () => { if (settled) return; settled = true; onDone ? onDone() : next(my); };
+    const fail = err => {
+      if (settled || !live()) return; settled = true; clearTimeout(dog);
+      if (attempt === 0){ cancelAll(); setTimeout(() => live() || id + 1 === uttId ? say(text, my, 1, onDone) : 0, 150); return; }
+      if (attempt === 1){
+        if (v) broken.add(v.voiceURI);
+        const fb = fallbackVoice(v && v.voiceURI); reportVoice(v, err, fb);
+        cancelAll(); if (fb) { setTimeout(() => say(text, my, 2, onDone), 150); return; }
+      }
+      onDone ? onDone() : next(my);
+    };
+    u.onstart = () => { started = true; clearTimeout(dog); if (attempt === 1 && v) plainOnly.add(v.voiceURI); };
+    u.onend = () => { if (!live()) return; clearTimeout(dog); started ? done() : fail('sem som'); };
+    u.onerror = e => { if (!live() || e.error === 'interrupted' || e.error === 'canceled') return; clearTimeout(dog); fail(e.error || 'erro'); };
+    // vozes online às vezes ficam mudas sem avisar: se não começar em 4s, tenta de novo
+    const dog = setTimeout(() => { if (!started && live() && !synth.paused) fail('sem resposta'); }, 4000);
+    const gap = Math.max(0, 140 - (performance.now() - lastCancel));   // dar tempo ao motor de voz depois de um cancel
+    setTimeout(() => { if (live()) synth.speak(u); }, gap);
+  }
+  // Se o visitante muda a voz durante a leitura, a frase atual recomeça já com a nova voz
+  function applyNow(){
+    if (mode === 'tts' && curSeg && synth.speaking && !synth.paused){
+      cancelAll(); say(curSeg.text, token);
+    }
+  }
+
+  // ----- Painel de voz -----
+  const panel = document.getElementById('voice-panel'), btnVoice = document.getElementById('pl-voice');
+  const rIn = document.getElementById('vp-rate'), pIn = document.getElementById('vp-pitch');
+  const rV = document.getElementById('vp-rate-v'), pV = document.getElementById('vp-pitch-v');
+  function showVals(){ rIn.value = rate; pIn.value = pitch; rV.textContent = rate.toFixed(2).replace('.', ',') + '×'; pV.textContent = pitch.toFixed(2).replace('.', ','); }
+  showVals();
+  function togglePanel(open){
+    const o = open ?? panel.hidden;
+    panel.hidden = !o; btnVoice.setAttribute('aria-expanded', o);
+    if (o){ pickVoice(); sel.focus({preventScroll:true}); }
+  }
+  btnVoice.addEventListener('click', e => { e.stopPropagation(); togglePanel(); });
+  document.getElementById('vp-close').addEventListener('click', () => togglePanel(false));
+  panel.addEventListener('click', e => e.stopPropagation());
+  document.addEventListener('click', e => { if (!panel.hidden && !e.target.closest('#player')) togglePanel(false); });
+  sel.addEventListener('change', () => {
+    const v = synth && synth.getVoices().find(x => x.voiceURI === sel.value);
+    if (v){ voice = v; broken.delete(v.voiceURI); plainOnly.delete(v.voiceURI); vstore.set('tts-voice', v.voiceURI); warnMsg = ''; tip.textContent = ''; applyNow(); }
+  });
+  rIn.addEventListener('input', () => { rate = +rIn.value; vstore.set('tts-rate', rate); showVals(); });
+  pIn.addEventListener('input', () => { pitch = +pIn.value; vstore.set('tts-pitch', pitch); showVals(); });
+  rIn.addEventListener('change', applyNow); pIn.addEventListener('change', applyNow);
+  document.getElementById('vp-reset').addEventListener('click', () => {
+    rate = DEF.rate; pitch = DEF.pitch; vstore.set('tts-rate', rate); vstore.set('tts-pitch', pitch);
+    try { localStorage.removeItem('tts-voice'); } catch(e){}
+    broken.clear(); plainOnly.clear(); warnMsg = '';
+    pickVoice(); showVals(); applyNow();
+  });
+  document.getElementById('vp-test').addEventListener('click', () => {
+    if (!synth) return;
+    if (mode === 'tts' && synth.speaking){ applyNow(); return; }
+    if (mode === 'rec') return;
+    cancelAll(); pickVoice();
+    say('Que a Luz guie seus passos, aventureiro. Esta é a voz que narrará as crônicas de Azeroth.', token, 0, () => {});
+  });
 
   cards.forEach(card => {
     card.addEventListener('click', e => {
@@ -1259,7 +1418,7 @@ document.querySelectorAll('a.za-link, a.za-link-seal').forEach(a => {
   addEventListener('beforeunload', () => { if (synth) synth.cancel(); });
   if (!synth) return;
   // Chrome interrompe falas longas após ~15s; um "toque" periódico evita o corte
-  setInterval(() => { if (mode === 'tts' && synth.speaking && !synth.paused){ synth.pause(); synth.resume(); } }, 12000);
+  setInterval(() => { if (mode === 'tts' && synth.speaking && !synth.paused && !(voice && isNatural(voice))){ synth.pause(); synth.resume(); } }, 12000);
 })();
 </script>
 </body>
