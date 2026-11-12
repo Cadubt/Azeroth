@@ -859,6 +859,8 @@ document.querySelectorAll('.entry,.era,.reveal').forEach(el => io.observe(el));
 
 /* era accent tracking */
 const root = document.documentElement;
+/* a cor das fagulhas vive aqui porque setEra a atualiza antes do bloco das fagulhas existir */
+let emberRGB = [217,168,74];
 let currentEra = null;
 function setEra(id){
   if (id === currentEra) return; currentEra = id;
@@ -934,11 +936,10 @@ chips.addEventListener('click', e => {
 /* o salto respeita a altura real da barra fixa */
 function navHeight(){ root.style.setProperty('--navh', (nav.offsetHeight + 14) + 'px'); }
 navHeight(); addEventListener('resize', navHeight);
-onScroll();
 
 /* embers */
 const cv = document.getElementById('embers'), cx = cv.getContext('2d');
-let W, H, emberRGB = [217,168,74], parts = [];
+let W, H, parts = [];
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function size(){ W = cv.width = innerWidth * devicePixelRatio; H = cv.height = innerHeight * devicePixelRatio; cv.style.width = innerWidth+'px'; cv.style.height = innerHeight+'px'; }
 size(); addEventListener('resize', size);
@@ -1436,12 +1437,19 @@ document.querySelectorAll('a.za-link, a.za-link-seal').forEach(a => {
   // Fala um trecho; cada fala tem um id para que trocar a voz no meio não pule frases
   let curSeg = null, uttId = 0, lastCancel = 0;
   function cancelAll(){ uttId++; synth.cancel(); lastCancel = performance.now(); }
+  // O motor descarta os objetos de voz quando a lista muda; pegamos sempre o equivalente atual
+  function liveVoice(){
+    if (!synth || !voice) return null;
+    const vs = synth.getVoices();
+    return vs.includes(voice) ? voice : (vs.find(x => x.voiceURI === voice.voiceURI) || null);
+  }
   // Fala direto, sem tentativas de reserva nem espera de verificação: o som começa na hora
   function say(text, my, onDone){
     const id = ++uttId;
-    const v = voice;
+    const v = liveVoice();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = v ? v.lang : 'pt-BR'; if (v) u.voice = v;
+    u.lang = v ? v.lang : 'pt-BR';
+    if (v) try { u.voice = v; } catch (_) {}   // voz invalidada pelo motor: segue na voz padrao
     u.rate = rate; u.pitch = pitch;
     let settled = false;
     const live = () => id === uttId && (onDone ? true : my === token);
