@@ -57,3 +57,16 @@ CÓDIGO | ANO              |  CARD
 6-08  |  ≈ Ano 25         |  A fundação da Cidade Baixa
 6-09  |  ≈ Ano 25         |  O sacrifício de Garek e a entrada na Horda
 6-10  |  ≈ Ano 25         |  O pequeno rei e a sombra de Onyxia
+
+RETRATOS DO DRAMATIS PERSONAE
+=============================
+Salve na subpasta imagens/personae/ o retrato de cada personagem.
+Formato ideal: vertical, cerca de 1024 x 1536 px (proporcao 2:3).
+O nome do arquivo e indicado no campo img da ficha, dentro do index.html,
+entao mande o retrato que eu guardo o arquivo e ligo a ficha a ele.
+Personagens sem retrato aparecem com a inicial do nome no lugar da imagem.
+
+ARQUIVO            |  PERSONAGEM
+-------------------+--------------------------------------
+aegwynn.webp       |  Aegwynn, Guardia de Tirisfal
+akama.webp         |  Akama, anciao dos Lingua de Cinzas

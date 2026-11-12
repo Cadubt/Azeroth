@@ -176,6 +176,108 @@ html{overflow-x:hidden}
 .note.liga b::before{content:"✦ "}
 .note.z b::before{content:"✠ "}
 
+/* ===== DRAMATIS PERSONAE ===== */
+.personae{position:relative;max-width:1500px;margin:0 auto;padding:100px 16px 20px;scroll-margin-top:var(--navh,60px)}
+.personae .head{text-align:center}
+.personae .book{display:block;font-family:var(--display);font-size:.75rem;letter-spacing:.4em;color:var(--gold)}
+.personae h2{font-family:'Cinzel Decorative',var(--display);font-size:clamp(1.8rem,5vw,2.9rem);margin:.2em 0 .2em;
+  background:linear-gradient(180deg,#fff2c8,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
+.personae .sub{font-style:italic;color:var(--parch-dim);max-width:640px;margin:0 auto}
+.pbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:center;margin:30px 0 4px}
+.pbar .find{position:relative;flex:1 1 240px;max-width:300px}
+.pbar .find::before{content:"\2315";position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--parch-dim);font-size:1.05rem}
+.pbar input{width:100%;background:rgba(0,0,0,.4);border:1px solid var(--line);color:var(--parch);font-family:var(--body);
+  font-size:1rem;padding:9px 12px 9px 32px;border-radius:2px;-webkit-appearance:none}
+.pbar input:focus{outline:none;border-color:var(--accent)}
+.ptags{display:flex;flex-wrap:wrap;gap:5px;justify-content:center}
+.ptags button{font-family:var(--display);font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;padding:6px 10px;cursor:pointer;
+  background:none;border:1px solid var(--line);color:var(--parch-dim);border-radius:2px;transition:all .3s}
+.ptags button:hover{color:var(--gold-hi);border-color:var(--pc,var(--gold))}
+.ptags button.on{color:#0b0907;background:var(--pc,var(--gold));border-color:var(--pc,var(--gold))}
+.pcount{text-align:center;font-family:var(--display);font-size:.6rem;letter-spacing:.2em;color:var(--parch-dim);margin-top:12px}
+.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:12px;margin-top:18px}
+.pc{position:relative;border:1px solid var(--line);border-left:2px solid var(--pc);background:linear-gradient(160deg,#1f1810,#140f0a);
+  padding:14px 16px 13px;border-radius:3px;transition:box-shadow .35s,border-color .35s}
+.pc:hover{border-color:rgba(var(--accent-rgb),.35);box-shadow:0 12px 28px rgba(0,0,0,.5),0 0 22px -10px var(--pc)}
+.pc h4{font-family:var(--display);font-size:1.02rem;line-height:1.2;color:var(--gold-hi)}
+.pc .kind{display:block;font-family:var(--display);font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--pc);margin:4px 0 8px}
+.pc p{font-size:.98rem;line-height:1.42;color:var(--parch-dim)}
+.pc .fol{display:flex;flex-wrap:wrap;gap:5px;margin-top:11px}
+.pc .fol a{font-family:var(--display);font-size:.58rem;letter-spacing:.1em;padding:3px 7px;border:1px solid rgba(var(--accent-rgb),.25);
+  color:var(--parch-dim);border-radius:2px;text-decoration:none;cursor:pointer;transition:all .25s}
+.pc .fol a:hover{color:#0b0907;background:var(--gold);border-color:var(--gold)}
+.pempty{text-align:center;color:var(--parch-dim);font-style:italic;padding:26px 0}
+@keyframes folioFlash{0%,100%{box-shadow:0 18px 40px rgba(0,0,0,.5)}
+  30%,70%{box-shadow:0 18px 40px rgba(0,0,0,.5),0 0 0 2px var(--era),0 0 44px -6px var(--era)}}
+.card.flash{animation:folioFlash 1.9s ease}
+@media (max-width:600px){
+  .personae{padding:70px 16px 10px}
+  .plist{grid-template-columns:1fr}
+  .pbar{gap:10px}
+  .pbar .find{max-width:none}
+  .ptags{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;justify-content:flex-start;width:100%;padding-bottom:3px}
+  .ptags::-webkit-scrollbar{display:none}
+  .ptags button{flex:none}
+}
+
+/* ===== FICHA DO PERSONAGEM ===== */
+.pc{cursor:pointer}
+.pc:focus-visible{outline:1px solid var(--pc);outline-offset:2px}
+.pc .top{display:flex;gap:11px;align-items:flex-start}
+.pc .thumb{flex:none;width:46px;height:60px;object-fit:cover;object-position:50% 18%;border:1px solid var(--pc);border-radius:2px;background:#0b0907}
+.pc .top .kind{margin:4px 0 0}
+.pc .top h4{margin:0}
+.pc > p{margin-top:9px}
+.pc .more{display:block;margin-top:9px;font-family:var(--display);font-size:.54rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--pc);opacity:0;transition:opacity .3s}
+.pc:hover .more,.pc:focus-visible .more{opacity:.9}
+
+.ficha{position:fixed;inset:0;z-index:130;display:grid;place-items:center;padding:20px 16px;
+  background:rgba(5,4,3,.92);backdrop-filter:blur(7px);opacity:0;pointer-events:none;transition:opacity .4s}
+.ficha.open{opacity:1;pointer-events:auto}
+.ficha .sheet{position:relative;display:grid;grid-template-columns:minmax(0,37%) minmax(0,1fr);
+  width:min(1060px,96vw);max-height:88vh;min-height:min(600px,84vh);overflow:hidden;
+  background:linear-gradient(160deg,#1f1810,#120d09);border:1px solid var(--fi,#d9a84a);
+  box-shadow:0 30px 90px rgba(0,0,0,.8),0 0 70px -24px var(--fi,#d9a84a);
+  transform:translateY(20px) scale(.985);transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.ficha.open .sheet{transform:none}
+.ficha .art{position:relative;background:#0b0907;overflow:hidden;border-right:1px solid var(--line)}
+.ficha .art img{width:100%;height:100%;object-fit:cover;object-position:50% 14%;display:block}
+.ficha .art img[hidden]{display:none}
+.ficha .art .noart{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-weight:900;
+  font-size:clamp(3rem,8vw,6rem);color:var(--fi,#d9a84a);opacity:.2}
+.ficha .art::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,transparent 62%,rgba(18,13,9,.8) 100%)}
+.ficha .info{padding:30px 32px 32px 30px;overflow:auto;text-align:left}
+.ficha .info > .kind{font-family:var(--display);font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;color:var(--fi,#d9a84a)}
+.ficha h3{font-family:'Cinzel Decorative',var(--display);font-size:clamp(1.5rem,3.4vw,2.2rem);line-height:1.1;color:var(--gold-hi);margin:7px 0 3px}
+.ficha .epi{display:block;font-family:var(--display);font-style:italic;font-size:.95rem;letter-spacing:.05em;color:var(--parch-dim);margin-bottom:18px}
+.ficha .epi[hidden]{display:none}
+.ficha .facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:8px;margin-bottom:20px}
+.ficha .facts[hidden]{display:none}
+.ficha .facts div{border:1px solid var(--line);padding:9px 11px;background:rgba(0,0,0,.35)}
+.ficha .facts small{display:block;font-family:var(--display);font-size:.52rem;letter-spacing:.2em;color:var(--parch-dim);margin-bottom:4px}
+.ficha .facts strong{font-family:var(--display);font-size:.78rem;line-height:1.25;color:var(--gold-hi)}
+.ficha .bio p{color:var(--parch);font-size:1.06rem;line-height:1.5;margin-bottom:12px}
+.ficha .apar{margin-top:20px;border-top:1px solid var(--line);padding-top:15px}
+.ficha .apar h5{font-family:var(--display);font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:var(--parch-dim);margin-bottom:8px}
+.ficha .apar a{display:flex;gap:11px;align-items:baseline;padding:6px 0;color:var(--parch-dim);text-decoration:none;
+  border-bottom:1px solid rgba(58,44,28,.5);transition:color .25s}
+.ficha .apar a:last-child{border-bottom:none}
+.ficha .apar a:hover{color:var(--gold-hi)}
+.ficha .apar b{flex:none;font-family:var(--display);font-size:.6rem;letter-spacing:.1em;color:var(--fi,#d9a84a);min-width:3.1em}
+.ficha .apar span{font-size:.98rem;line-height:1.3}
+.ficha .x{position:absolute;top:12px;right:12px;z-index:3;width:38px;height:38px;border:1px solid var(--line);
+  background:rgba(20,15,10,.85);color:var(--parch);font-size:1.5rem;line-height:1;cursor:pointer;border-radius:2px;transition:all .3s}
+.ficha .x:hover{border-color:var(--fi,#d9a84a);color:var(--fi,#d9a84a)}
+@media (max-width:760px){
+  .ficha{padding:0}
+  .ficha .sheet{grid-template-columns:1fr;grid-template-rows:38vh auto;width:100vw;height:100vh;max-height:100vh;min-height:0;border:none}
+  .ficha .art{border-right:none;border-bottom:1px solid var(--line)}
+  .ficha .art::after{background:linear-gradient(180deg,transparent 50%,rgba(18,13,9,.9) 100%)}
+  .ficha .info{padding:20px 18px 44px}
+}
+
 /* final */
 .finale{position:relative;text-align:center;padding:110px 16px 140px;max-width:860px;margin:0 auto}
 .finale .portal{width:220px;height:220px;margin:0 auto 34px;border-radius:50%;position:relative;
@@ -526,6 +628,21 @@ footer{position:relative;z-index:2;text-align:center;padding:30px 16px 50px;font
     </div>
     <p class="closing">Guardo a pena e deixo uma página em branco. Que o que você escrever nela honre os que vieram antes.<b>— <a class="za-link" href="https://worldofwarcraft.blizzard.com/pt-br/forever/us/armory/character/zeugades-anchoze" target="_blank" rel="noopener" title="Ver Zeugades Anchoze na Armaria do WoW Forever">Zeugades Anchoze</a>, em nome da Liga dos Exploradores</b></p>
   </section>
+
+  <section class="personae" id="personae">
+    <div class="head reveal">
+      <span class="book">APÊNDICE</span>
+      <h2>Dramatis Personae</h2>
+      <p class="sub">Quem atravessa estas páginas. Clique num fólio para ir ao trecho em que o nome aparece.</p>
+    </div>
+    <div class="pbar">
+      <label class="find"><input type="search" id="pfind" placeholder="Procurar um nome" aria-label="Procurar um nome" autocomplete="off"></label>
+      <div class="ptags" id="ptags" role="group" aria-label="Filtrar por povo"></div>
+    </div>
+    <div class="pcount" id="pcount"></div>
+    <div class="plist" id="plist"></div>
+    <div class="pempty" id="pempty" hidden>Nenhum nome encontrado nestas páginas.</div>
+  </section>
 </main>
 
 <div class="player" id="player" role="region" aria-label="Narração">
@@ -556,6 +673,20 @@ footer{position:relative;z-index:2;text-align:center;padding:30px 16px 50px;font
   </div></div>
   <div class="cap"><small></small><strong></strong></div>
   <p class="subtitle" aria-live="polite"></p>
+</div>
+<div class="ficha" id="ficha" role="dialog" aria-modal="true" aria-labelledby="fi-nome">
+  <div class="sheet">
+    <button class="x" type="button" aria-label="Fechar">&times;</button>
+    <div class="art"><img alt="" hidden><span class="noart" aria-hidden="true"></span></div>
+    <div class="info">
+      <span class="kind"></span>
+      <h3 id="fi-nome"></h3>
+      <span class="epi"></span>
+      <div class="facts"></div>
+      <div class="bio"></div>
+      <div class="apar"><h5>Aparece em</h5><div class="list"></div></div>
+    </div>
+  </div>
 </div>
 <div class="snake hidden" id="snake" role="dialog" aria-label="Jogo da cobrinha">
   <div class="bar" id="snake-bar">
@@ -835,6 +966,7 @@ ERAS.forEach(era => {
     const cap = yearCaption(yr);
     const e = document.createElement('article');
     e.className = 'entry ' + (side++ % 2 ? 'r' : 'l');
+    e.id = 'f' + code;
     e.dataset.era = era.id;
     e.style.setProperty('--era', era.color);
     const note = ev.n ? `<div class="note ${ev.n.k}"><b>${ev.n.t}</b>${esc(ev.n.x)}</div>` : '';
@@ -850,6 +982,205 @@ ERAS.forEach(era => {
     loadCover(e.querySelector('.cover'), code, ev.img);
   });
 });
+
+/* ===== DRAMATIS PERSONAE ===== */
+const PTAGS = [['al','Aliança','#5fa8ff'],['ho','Horda','#e0533a'],['kal','Kaldorei','#7fd36a'],
+  ['dra','Dragões','#a77bd6'],['tit','Titãs','#f2c35c'],['ant','Antigos Deuses','#5fd8c0'],
+  ['leg','Legião Ardente','#ff5fa8'],['fla','Flagelo','#8fd8ef'],['out','Outros povos','#c9b38a']];
+const CAST = [
+ {n:"Aegwynn",k:"al",d:"Guardiã de Tirisfal por quase novecentos anos. Derrotou o avatar de Sargeras e escondeu o corpo — sem saber que deixava ali a ruína do próprio filho.",img:"aegwynn.webp",t:"A última Guardiã antes do fim da ordem",fa:[["Povo","Humana"],["Ordem","Conselho de Tirisfal"],["Época","≈ 823 a.P."],["Legado","Medivh, o último Guardião"]],b:["O Conselho de Tirisfal escolhia um único mortal para receber o poder reunido de todos os magos da ordem e caçar sozinho o que viesse do Vazio Abissal. Aegwynn aceitou o encargo e o manteve por quase novecentos anos — mais do que qualquer Guardião antes ou depois dela.","Cerca de 823 anos antes do Portal Negro, seguiu o rastro de demônios que abatiam dragões no norte gelado e encontrou, no fim da trilha, o próprio Sargeras, descido num corpo emprestado. Ela venceu. Levou o cadáver do titã até as ruínas submersas de uma cidade antiga, selou-o ali e voltou sem contar a ninguém.","O corpo era apenas a casca. O espírito de Sargeras ficou escondido dentro dela, paciente. Quando Aegwynn, já em desacordo com o Conselho, decidiu gerar ela mesma o próximo Guardião, entregou ao filho o dom e a semente na mesma herança. O menino chamou-se Medivh, e foi pela mão dele que o Portal Negro se abriu."]},
+ {n:"Akama",k:"out",d:"Ancião dos draenei quebrados de Terralém, aliado relutante de Illidan.",img:"akama.webp",t:"O guardião que serve quem lhe tomou o templo",fa:[["Povo","Draenei quebrado"],["Clã","Língua de Cinzas"],["Época","≈ Ano 21"],["Templo","Karabor, hoje o Templo Negro"]],b:["Quando Draenor se partiu e o fogo verde atravessou o que sobrou, parte dos draenei não morreu nem se salvou: ficou no meio. Perderam a altura, a voz e o contato com a Luz, e passaram a ser chamados de quebrados. Akama é o ancião dos Língua de Cinzas, o maior desses clãs.","Em Terralém, aliou os seus ao exilado que chegava de Azeroth. Ao lado de Illidan, Vashj e Kael’thas, derrubou Magtheridon e entregou o mundo partido a um novo senhor. O preço apareceu depois: Illidan ficou com um pedaço da alma de Akama, e quem não tem a alma inteira não desobedece.","Então serve. Mas serve em volta de uma única coisa: a fortaleza que Illidan chama de Templo Negro foi erguida como Karabor, o templo onde Akama rezava antes de tudo arder. Ele guarda as portas do próprio santuário profanado, espera, e conta os anos."]},
+ {n:"Alexstrasza",k:"dra",d:"Aspecto Vermelho, a Guardiã da Vida, incumbida pelos titãs de zelar por tudo que respira."},
+ {n:"Alleria",k:"al",d:"Patrulheira alta-elfa de Quel’Thalas. Atravessou o Portal Negro atrás da Horda e não voltou.",a:["Alleria Correventos"]},
+ {n:"Alodi",k:"al",d:"O primeiro Guardião de Tirisfal, mantido em segredo pelo Conselho."},
+ {n:"Alonsus Faol",k:"al",d:"Arcebispo de Lordaeron. Ergueu a Ordem da Mão de Prata e ordenou os primeiros paladinos."},
+ {n:"Anacronos",k:"dra",d:"Filho de Nozdormu. Ajudou a selar os exércitos qiraji em Ahn’Qiraj."},
+ {n:"Anasterian Andassol",k:"al",d:"Último rei dos altos elfos. Aliou Quel’Thalas a Arathor contra os amani e morreu defendendo a Nascente do Sol.",a:["Anasterian"]},
+ {n:"Anduin",k:"al",d:"Filho de Varian Wrynn. Recebeu a coroa de Ventobravo aos dez anos, sob a regência de Bolvar.",a:["Anduin Wrynn"]},
+ {n:"Antônidas",k:"al",d:"Arquimago à frente do Kirin Tor e mestre de Jaina. Morreu quando o Flagelo tomou Dalaran."},
+ {n:"Anub’arak",k:"fla",d:"Rei nerubiano derrotado pelo Flagelo e reerguido como senhor da cripta."},
+ {n:"Anya",k:"ho",d:"Patrulheira sombria dos Renegados. Defendeu a Cidade Baixa ao lado de Garek."},
+ {n:"Aman’Thul",k:"tit",d:"O Alto-Padre dos titãs, que arrancou Y’Shaarj da terra de Pandária."},
+ {n:"Arquimonde",k:"leg",d:"Senhor demoníaco da Legião. Destruiu Dalaran e caiu no Monte Hyjal, sob as raízes de Nordrassil."},
+ {n:"Arthas",k:"fla",d:"Príncipe de Lordaeron e paladino da Mão de Prata. Tomou Gélido Lamento, matou o próprio pai e subiu ao Trono de Gelo.",a:["Arthas Menethil"]},
+ {n:"Azshara",k:"kal",d:"Rainha dos elfos da noite. Abriu caminho para a Legião e, na Grande Cisão, tornou-se a primeira das naga.",a:["Rainha Azshara"]},
+ {n:"Bolvar Fordragon",k:"al",d:"Regente de Ventobravo durante a infância de Anduin, com Onyxia sussurrando na corte."},
+ {n:"C’Thun",k:"ant",d:"Antigo Deus selado sob Ahn’Qiraj, senhor dos qiraji."},
+ {n:"Cairne",k:"ho",d:"Cairne Peito Rubro, chefe tauren. Levou o seu povo a caminhar com Thrall."},
+ {n:"Cenarius",k:"kal",d:"Semideus das florestas, filho de Elune. Mestre dos primeiros druidas, morto por Grom Grito Infernal."},
+ {n:"Chen",k:"out",d:"Chen Stormstout, andarilho pandaren. Lutou ao lado da nova Horda na defesa de Durotar."},
+ {n:"Daelin Proudmore",k:"al",d:"Almirante de Kul Tiras e pai de Jaina. Atacou a nova Horda e morreu em Theramore."},
+ {n:"Danath",k:"al",d:"Comandante de Stromgarde nas campanhas da Segunda Guerra.",a:["Danath Trollbane"]},
+ {n:"Dath’Remar Andassol",k:"al",d:"Guiou os elfos exilados ao norte dos Reinos do Leste e fundou Quel’Thalas e a Nascente do Sol."},
+ {n:"Edwin VanCleef",k:"al",d:"Mestre dos pedreiros que reergueram Ventobravo. Sem o pagamento prometido, fundou a Irmandade Défias."},
+ {n:"Fandral",k:"kal",d:"Arquidruida. Perdeu o filho Valstann contra os qiraji e, anos depois, plantou Teldrassil contra a vontade dos Aspectos.",a:["Fandral Garramorta"]},
+ {n:"Fyrakk",k:"dra",d:"Encarnado do fogo, um dos primordiais que recusaram a ordenação dos titãs."},
+ {n:"Garek Bandarion",k:"ho",d:"Guerreiro reerguido entre os Renegados. Invocou a Luz e sacrificou-se para conter o ataque de Naxxramas.",a:["Garek"]},
+ {n:"Garithos",k:"al",d:"Grão-marechal humano cuja desconfiança empurrou os elfos de Kael’thas para fora da Aliança."},
+ {n:"Garona",k:"ho",d:"Meio-orc criada por Gul’dan. Sob o controle do bruxo, assassinou o rei Llane Wrynn."},
+ {n:"Grom Grito Infernal",k:"ho",d:"Chefe dos Lobos Guerreiros. O primeiro a beber o sangue de Mannoroth e quem pagou a dívida matando o demônio.",a:["Grom"]},
+ {n:"Gul’dan",k:"ho",d:"Bruxo orc, o primeiro dos necrolitas. Vendeu o seu povo a Kil’jaeden e ergueu o Portal Negro."},
+ {n:"Illidan",k:"kal",d:"Irmão de Malfurion. Bebeu do poder do Poço, passou dez mil anos preso e saiu em forma demoníaca — nem herói, nem vilão."},
+ {n:"Iridikron",k:"dra",d:"Encarnado da pedra, o mais calculista dos primordiais."},
+ {n:"Jaina",k:"al",d:"Maga de Dalaran, aluna de Antônidas. Levou os refugiados humanos a Kalimdor e fundou Theramore.",a:["Jaina Proudmore"]},
+ {n:"Kael’thas Andassol",k:"ho",d:"Príncipe dos elfos sangrentos. Levou o seu povo a Terralém atrás de uma nova fonte de poder.",a:["Kael’thas"]},
+ {n:"Kang",k:"out",d:"Kang, o Punho Inflexível. Ensinou os pandaren escravizados a lutar de mãos vazias e derrubou os mogu."},
+ {n:"Kel’Thuzad",k:"fla",d:"Mago de Dalaran que trocou o Kirin Tor pelo Rei Lich. Fundou o Culto dos Malditos e voltou lich em Naxxramas."},
+ {n:"Khadgar",k:"al",d:"Aprendiz de Medivh, envelhecido pela magia do mestre. Tornou-se um dos maiores arquimagos da Aliança."},
+ {n:"Khardros",k:"al",d:"Khardros Martelo Selvagem, senhor dos anões Barbarrubra na Guerra dos Três Martelos."},
+ {n:"Kil’jaeden",k:"leg",d:"O Enganador, senhor da Legião. Corrompeu os orcs e enganou Ner’zhul."},
+ {n:"Kith’ix",k:"ant",d:"Aqir que conduziu o seu povo insetoide numa guerra de conquista contra os impérios troll."},
+ {n:"Kurdran",k:"al",d:"Kurdran Martelo Feroz, senhor dos grifos, aliado da Aliança na Segunda Guerra."},
+ {n:"Lady Vashj",k:"out",d:"Naga ao lado de Illidan; antes, serva de Azshara.",a:["Vashj"]},
+ {n:"Lei Shen",k:"out",d:"O Rei Trovão. Usurpou o poder do guardião Ra-den e uniu os mogu num império cruel."},
+ {n:"Llane Wrynn",k:"al",d:"Rei de Ventobravo na Primeira Guerra, assassinado por Garona."},
+ {n:"Lothar",k:"al",d:"Último descendente de Arathor. Conduziu a retirada de Ventobravo e caiu diante do Portão de Fogo Negro.",a:["Anduin Lothar"]},
+ {n:"Madoran",k:"al",d:"Madoran Barbabronze, rei de Altaforja na Guerra dos Três Martelos."},
+ {n:"Magtheridon",k:"leg",d:"Senhor pit lord que governava Terralém até ser derrubado por Illidan."},
+ {n:"Mal’Ganis",k:"leg",d:"Nathrezim que atraiu Arthas até a Nortúndria."},
+ {n:"Malfurion",k:"kal",d:"Primeiro druida mortal, discípulo de Cenarius. Comandou a resistência kaldorei e baniu o próprio irmão."},
+ {n:"Malygos",k:"dra",d:"Aspecto Azul, guardião da magia. Perdeu quase todo o seu voo na traição de Neltharion."},
+ {n:"Mannoroth",k:"leg",d:"Pit lord cujo sangue amaldiçoou os orcs. Morto por Grom Grito Infernal no Cânion Gris."},
+ {n:"Mão Negra",k:"ho",d:"Primeiro Chefe de Guerra da Horda e fantoche de Gul’dan. Derrubado por Orgrim."},
+ {n:"Medivh",k:"al",d:"Último Guardião de Tirisfal e filho de Aegwynn. Possuído por Sargeras, abriu o Portal Negro; morreu em Karazhan."},
+ {n:"Muradin",k:"al",d:"Anão explorador que acompanhou Arthas na busca por Gélido Lamento, em Nortúndria."},
+ {n:"N’Zoth",k:"ant",d:"Antigo Deus que sussurrou a Neltharion. Segue preso sob o mar."},
+ {n:"Neltharion",k:"dra",d:"Aspecto Negro, guardião da terra. Ouviu os Antigos Deuses, forjou a Alma do Dragão e traiu os seus."},
+ {n:"Ner’zhul",k:"fla",d:"Xamã orc enganado por Kil’jaeden. Teve a alma presa no Gélido Lamento e tornou-se o primeiro Rei Lich."},
+ {n:"Nozdormu",k:"dra",d:"Aspecto Bronze, guardião do tempo."},
+ {n:"Onyxia",k:"dra",d:"Filha de Neltharion. Disfarçada de Lady Katrana Prestor, manipulou a corte de Ventobravo.",a:["Lady Katrana Prestor"]},
+ {n:"Orgrim Martelo da Perdição",k:"ho",d:"Derrubou Mão Negra e comandou a Horda na Segunda Guerra.",a:["Orgrim"]},
+ {n:"Ra-den",k:"tit",d:"Guardião titânico cujo poder Lei Shen usurpou para erguer o império mogu."},
+ {n:"Ragnaros",k:"ant",d:"O Senhor do Fogo, invocado por Thaurissan. Arde sob a Montanha Rocha Negra, à espera."},
+ {n:"Raszageth",k:"dra",d:"Encarnada da tempestade, aprisionada pelos Aspectos."},
+ {n:"Rexxar",k:"ho",d:"Caçador de feras mestiço. Defendeu Durotar do ataque de Daelin Proudmore."},
+ {n:"Rokhan",k:"ho",d:"Batedor troll da Lança Negra, veterano das campanhas da nova Horda."},
+ {n:"Sargeras",k:"leg",d:"O titã que julgou a criação irrecuperável e criou a Legião Ardente para queimá-la."},
+ {n:"Sen’jin",k:"ho",d:"Chefe dos trolls Lança Negra, que viu em sonho a aliança com Thrall."},
+ {n:"Shaohao",k:"out",d:"Último imperador pandaren. Sacrificou-se para envolver Pandária em névoas e escondê-la do mundo."},
+ {n:"Sylvana Correventos",k:"ho",d:"Patrulheira-General de Quel’Thalas, morta por Arthas e erguida como banshee. Rompeu com o Flagelo e fundou os Renegados.",a:["Sylvana"]},
+ {n:"Terenas",k:"al",d:"Terenas Menethil II, rei de Lordaeron, morto pelo próprio filho.",a:["Terenas Menethil II"]},
+ {n:"Thaurissan",k:"al",d:"Senhor dos anões Ferro Negro. Invocou Ragnaros e partiu a montanha na Guerra dos Três Martelos."},
+ {n:"Thoradin",k:"al",d:"Uniu as tribos humanas no reino de Arathor e venceu os trolls amani."},
+ {n:"Thrall",k:"ho",d:"Nascido no cativeiro humano. Libertou os orcs, reaprendeu o xamanismo e refundou a Horda em Durotar."},
+ {n:"Tichondrius",k:"leg",d:"Nathrezim encarregado de vigiar a Legião em Kalimdor. Morto por Illidan."},
+ {n:"Turalyon",k:"al",d:"Paladino da Mão de Prata. Assumiu o comando da Aliança após a morte de Lothar."},
+ {n:"Tyr",k:"tit",d:"Guardião titânico que ajudou os cinco proto-dragões a derrubar Galakrond."},
+ {n:"Tyrande",k:"kal",d:"Suma-sacerdotisa de Elune e líder das Sentinelas. Libertou Illidan após dez mil anos."},
+ {n:"Uther",k:"al",d:"Uther, o Arauto da Luz. Primeiro paladino da Mão de Prata e mestre de Arthas — morto pela espada do próprio aluno."},
+ {n:"Valstann",k:"kal",d:"Filho de Fandral, morto diante do pai na Guerra das Areias Cambiantes."},
+ {n:"Varian",k:"al",d:"Rei de Ventobravo. Desapareceu a caminho de Theramore.",a:["Varian Wrynn"]},
+ {n:"Varimathras",k:"leg",d:"Nathrezim que trocou de lado e passou a servir Sylvana na Cidade Baixa."},
+ {n:"Velen",k:"out",d:"Profeta dos draenei, perseguido por Kil’jaeden desde Argus."},
+ {n:"Vyranoth",k:"dra",d:"Encarnada do gelo, entre os primordiais que enfrentaram os Aspectos."},
+ {n:"Xavius",k:"kal",d:"Conselheiro de Azshara e primeiro dos sátiros."},
+ {n:"Y’Shaarj",k:"ant",d:"Antigo Deus de Pandária, arrancado da terra por Aman’Thul — o seu último sopro virou a Mácula."},
+ {n:"Yogg-Saron",k:"ant",d:"Antigo Deus aprisionado sob a Nortúndria."},
+ {n:"Ysera",k:"dra",d:"Aspecto Verde, a Sonhadora, ligada ao Sonho Esmeralda."},
+ {n:"Zul’jin",k:"ho",d:"Chefe dos trolls amani que levou o seu povo a lutar ao lado da Horda."}
+];
+/* um nome so, sem acento e com o apostrofo unificado: serve de chave e de campo de busca */
+const pnorm = s => s.toLowerCase().replace(/’/g, "'").normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const PIDX = new Map();
+CAST.forEach(c => { c.f = []; [c.n, ...(c.a || [])].forEach(x => PIDX.set(pnorm(x), c)); });
+/* os folios de cada personagem saem dos proprios cards, entao a lista nunca sai do ar */
+ERAS.forEach((era, ei) => era.events.forEach((ev, i) => {
+  const code = `${ei + 1}-${String(i + 1).padStart(2, '0')}`;
+  ev.who.forEach(w => { const c = PIDX.get(pnorm(w)); if (c && !c.f.some(x => x.code === code)) c.f.push({code, era, t: ev.t}); });
+}));
+CAST.sort((a, b) => a.n.localeCompare(b.n, 'pt-BR'));
+
+const TAGN = Object.fromEntries(PTAGS.map(t => [t[0], t]));
+const plist = document.getElementById('plist'), ptags = document.getElementById('ptags'),
+      pcount = document.getElementById('pcount'), pempty = document.getElementById('pempty');
+plist.innerHTML = CAST.map((c, i) => {
+  const t = TAGN[c.k], busca = pnorm([c.n, ...(c.a || []), c.d, t[1]].join(' '));
+  const fol = c.f.map(f => `<a data-code="${f.code}" href="#f${f.code}" title="${esc(f.t)}">${f.code.replace('-', '.')}</a>`).join('');
+  const thumb = c.img ? `<img class="thumb" src="imagens/personae/${c.img}" alt="" loading="lazy">` : '';
+  return `<article class="pc" data-k="${c.k}" data-i="${i}" data-s="${esc(busca)}" style="--pc:${t[2]}"
+    role="button" tabindex="0" aria-label="Abrir a ficha de ${esc(c.n)}">
+    <div class="top">${thumb}<div><h4>${esc(c.n)}</h4><span class="kind">${t[1]}</span></div></div>
+    <p>${esc(c.d)}</p>
+    ${fol ? `<div class="fol">${fol}</div>` : ''}<span class="more">Ver ficha ›</span></article>`;
+}).join('');
+ptags.innerHTML = '<button class="on" type="button" data-k="">Todos</button>' +
+  PTAGS.map(t => `<button type="button" data-k="${t[0]}" style="--pc:${t[2]}">${t[1]}</button>`).join('');
+
+let pk = '', pq = '';
+function pfilter(){
+  let n = 0;
+  for (const el of plist.children){
+    const ok = (!pk || el.dataset.k === pk) && (!pq || el.dataset.s.includes(pq));
+    el.hidden = !ok; if (ok) n++;
+  }
+  pempty.hidden = n > 0;
+  pcount.textContent = n === CAST.length ? `${CAST.length} nomes` : `${n} de ${CAST.length} nomes`;
+}
+ptags.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  pk = b.dataset.k;
+  for (const x of ptags.children) x.classList.toggle('on', x === b);
+  pfilter();
+});
+document.getElementById('pfind').addEventListener('input', e => { pq = pnorm(e.target.value.trim()); pfilter(); });
+/* leva ao card e da uma piscada nele, para a pessoa achar o trecho na pagina longa */
+function irAoFolio(code){
+  const el = document.getElementById('f' + code); if (!el) return;
+  jumpTo('f' + code);
+  const card = el.querySelector('.card');
+  card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash');
+  setTimeout(() => card.classList.remove('flash'), 2100);
+}
+plist.addEventListener('click', e => {
+  const a = e.target.closest('a[data-code]');
+  if (a){ e.preventDefault(); irAoFolio(a.dataset.code); return; }
+  const pc = e.target.closest('.pc');
+  if (pc) openFicha(CAST[+pc.dataset.i]);
+});
+pfilter();
+
+/* ===== FICHA DO PERSONAGEM ===== */
+const fi = document.getElementById('ficha'), fiArt = fi.querySelector('.art img');
+function openFicha(c){
+  const t = TAGN[c.k];
+  fi.style.setProperty('--fi', t[2]);
+  fi.querySelector('.info > .kind').textContent = t[1];
+  fi.querySelector('h3').textContent = c.n;
+  const epi = fi.querySelector('.epi');
+  epi.textContent = c.t || ''; epi.hidden = !c.t;
+  const fa = fi.querySelector('.facts');
+  fa.innerHTML = (c.fa || []).map(x => `<div><small>${esc(x[0])}</small><strong>${esc(x[1])}</strong></div>`).join('');
+  fa.hidden = !(c.fa && c.fa.length);
+  fi.querySelector('.bio').innerHTML = (c.b || [c.d]).map(x => `<p>${esc(x)}</p>`).join('');
+  fi.querySelector('.apar .list').innerHTML = c.f.map(f =>
+    `<a href="#f${f.code}" data-code="${f.code}"><b>${f.code.replace('-', '.')}</b><span>${esc(f.t)}</span></a>`).join('');
+  fi.querySelector('.noart').textContent = c.n[0];
+  /* sem retrato fica a inicial; quem tem, entra pelo nome do arquivo, sem sair tentando extensoes */
+  fiArt.hidden = !c.img;
+  if (c.img){ fiArt.src = 'imagens/personae/' + c.img; fiArt.alt = 'Retrato de ' + c.n; }
+  fi.classList.add('open'); document.body.style.overflow = 'hidden';
+  fi.querySelector('.x').focus({preventScroll: true});
+}
+function closeFicha(){ fi.classList.remove('open'); document.body.style.overflow = ''; }
+fi.addEventListener('click', e => {
+  const a = e.target.closest('a[data-code]');
+  if (a){ e.preventDefault(); closeFicha(); irAoFolio(a.dataset.code); return; }
+  if (!e.target.closest('.info') || e.target.closest('.x')) closeFicha();
+});
+addEventListener('keydown', e => {
+  if (e.key === 'Escape' && fi.classList.contains('open')){ e.stopImmediatePropagation(); closeFicha(); }
+}, true);
+plist.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  const pc = e.target.closest('.pc'); if (!pc) return;
+  e.preventDefault(); openFicha(CAST[+pc.dataset.i]);
+});
+
+/* a tira de livros ganha o atalho para o apendice */
+const pchip = document.createElement('a');
+pchip.href = '#personae'; pchip.dataset.era = 'personae';
+pchip.innerHTML = '<span class="num">✦</span><span class="lbl">Personae</span>';
+chips.appendChild(pchip);
 
 /* reveal */
 const io = new IntersectionObserver(es => es.forEach(e => {
@@ -870,12 +1201,12 @@ function setEra(id){
   root.style.setProperty('--accent-rgb', rgb);
   emberRGB = rgb.split(',').map(Number);
   nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.era === id));
-  eraN.textContent = era ? era.n : (id === 'final' ? '✦' : '—');
+  eraN.textContent = era ? era.n : (id ? '✦' : '—');
   const chip = chips.querySelector('a.on');
   if (chip) chips.scrollLeft = chip.offsetLeft - chips.clientWidth / 2 + chip.offsetWidth / 2;
   const at = ERAS.findIndex(x => x.id === id);
   document.getElementById('era-prev').disabled = at === 0;
-  document.getElementById('era-next').disabled = id === 'final' || at === ERAS.length - 1;
+  document.getElementById('era-next').disabled = id === 'final' || id === 'personae' || at === ERAS.length - 1;
   document.dispatchEvent(new CustomEvent('era:change', {detail: {id, color, rgb, era}}));
 }
 
@@ -893,6 +1224,7 @@ function onScroll(){
   let id = null;
   for (const m of marks) if (m.getBoundingClientRect().top < vh * .5) id = m.dataset.era;
   if (document.getElementById('finale').getBoundingClientRect().top < vh * .5) id = 'final';
+  if (document.getElementById('personae').getBoundingClientRect().top < vh * .5) id = 'personae';
   setEra(id);
 }
 addEventListener('scroll', onScroll, {passive:true});
@@ -919,7 +1251,7 @@ function jumpTo(id){
 function goBook(dir){
   const at = ERAS.findIndex(x => x.id === currentEra);
   let k;
-  if (currentEra === 'final') { if (dir > 0) return; k = ERAS.length - 1; }
+  if (currentEra === 'final' || currentEra === 'personae') { if (dir > 0) return; k = ERAS.length - 1; }
   else if (at < 0) k = 0;
   else k = Math.min(ERAS.length - 1, Math.max(0, at + dir));
   jumpTo(ERAS[k].id);
