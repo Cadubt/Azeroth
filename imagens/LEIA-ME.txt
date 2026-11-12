@@ -70,3 +70,11 @@ ARQUIVO            |  PERSONAGEM
 -------------------+--------------------------------------
 aegwynn.webp       |  Aegwynn, Guardia de Tirisfal
 akama.webp         |  Akama, anciao dos Lingua de Cinzas
+alexstrasza.webp   |  Alexstrasza, a Rainha dos Dragoes
+alodi.webp         |  Alodi, o primeiro Guardiao de Tirisfal
+alleria.webp       |  Alleria Correventos, patrulheira de Quel’Thalas
+alonsus-faol.webp  |  Alonsus Faol, arcebispo e fundador da Mao de Prata
+aman-thul.webp     |  Aman’Thul, lider do Panteao dos Titas
+anacronos.webp     |  Anacronos, da Revoada Bronze
+anasterian.webp    |  Anasterian Andassol, rei de Quel’Thalas
+anduin.webp        |  Anduin Wrynn, o pequeno rei de Ventobravo

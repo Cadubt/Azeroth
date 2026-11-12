@@ -113,3 +113,14 @@ CÓDIGO | ANO              |  CARD
 6-08  |  ≈ Ano 25         |  A fundação da Cidade Baixa
 
 6-09  |  ≈ Ano 25         |  O sacrifício de Garek e a entrada na Horda
+
+FICHAS DO DRAMATIS PERSONAE
+===========================
+As fichas dos personagens tambem podem ter gravacao, com o prefixo p- e o
+nome do personagem sem acento: audio/p-aegwynn.mp3, audio/p-alonsus-faol.mp3.
+Sem gravacao, a ficha e lida pela voz do navegador, como os cards.
+
+O que gravar em cada ficha, nesta ordem:
+  1. Nome e epiteto  (ex.: "Aegwynn. A ultima Guardia antes do fim da ordem.")
+  2. Os paragrafos da ficha
+  3. Os folios em que a pessoa aparece  (ex.: "Aparece em: Aegwynn enfrenta Sargeras.")
