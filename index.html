@@ -34,7 +34,7 @@ body{
   overflow-x:hidden;
   transition:background-color 1.2s ease;
 }
-#embers{position:fixed;inset:0;z-index:0;pointer-events:none}
+#stars,#embers{position:fixed;inset:0;z-index:0;pointer-events:none}
 .vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
   background:radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(0,0,0,.75) 100%),
              radial-gradient(ellipse at 50% 0%, rgba(var(--accent-rgb),.10), transparent 60%);
@@ -111,8 +111,21 @@ main{position:relative;z-index:2}
 @media (max-width:600px){.parchment .sign{padding-right:0;min-height:0;padding-bottom:96px}.wax{width:86px;bottom:14px}}
 
 /* ===== NAV ===== */
-.eranav{position:sticky;top:0;z-index:20;display:flex;gap:4px;justify-content:center;flex-wrap:wrap;padding:10px 12px;
-  background:linear-gradient(180deg,rgba(11,9,7,.95),rgba(11,9,7,.75));backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.eranav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:6px;justify-content:center;flex-wrap:nowrap;padding:8px 12px;
+  background:linear-gradient(180deg,rgba(11,9,7,.97),rgba(11,9,7,.82));backdrop-filter:blur(6px);border-bottom:1px solid var(--line);
+  transform:translateY(-105%);opacity:0;transition:transform .55s cubic-bezier(.2,.8,.2,1),opacity .4s}
+.eranav.show{transform:none;opacity:1}
+.eranav .chips{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;min-width:0}
+.eranav .tally{display:flex;align-items:baseline;gap:6px;white-space:nowrap;font-family:var(--display);
+  padding-right:12px;margin-right:6px;border-right:1px solid var(--line)}
+.eranav .tally .lb{font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--parch-dim)}
+.eranav .tally b{font-size:1.1rem;font-weight:900;line-height:1;color:var(--accent);text-shadow:0 0 16px rgba(var(--accent-rgb),.5);
+  min-width:2.6ch;text-align:center;transition:color .6s}
+.eranav .tally .of{font-size:.58rem;letter-spacing:.18em;color:var(--parch-dim)}
+.eranav .step{flex:none;width:28px;height:28px;display:grid;place-items:center;cursor:pointer;border-radius:2px;
+  background:none;border:1px solid var(--line);color:var(--parch-dim);font-size:1rem;line-height:1;transition:all .3s}
+.eranav .step:hover:not(:disabled){color:var(--gold-hi);border-color:var(--accent)}
+.eranav .step:disabled{opacity:.3;cursor:default}
 .eranav a{font-family:var(--display);font-size:.72rem;letter-spacing:.14em;color:var(--parch-dim);text-decoration:none;padding:7px 12px;border:1px solid transparent;border-radius:2px;transition:all .4s}
 .eranav a:hover{color:var(--gold-hi)}
 .eranav a.on{color:var(--accent);border-color:rgba(var(--accent-rgb),.5);box-shadow:0 0 14px rgba(var(--accent-rgb),.25) inset}
@@ -120,11 +133,11 @@ main{position:relative;z-index:2}
 .progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:30;width:0;box-shadow:0 0 10px var(--accent);transition:background .8s}
 
 /* ===== TIMELINE ===== */
-.timeline{position:relative;max-width:1180px;margin:0 auto;padding:30px 16px 60px;overflow-x:clip}
+.timeline{position:relative;max-width:1500px;margin:0 auto;padding:30px 16px 60px;overflow-x:clip}
 html{overflow-x:hidden}
 .spine{position:absolute;left:50%;top:0;bottom:0;width:2px;transform:translateX(-50%);background:var(--line)}
 .spine .fill{position:absolute;top:0;left:0;width:100%;height:0;background:linear-gradient(var(--gold),var(--accent));box-shadow:0 0 12px var(--accent)}
-.era{position:relative;text-align:center;padding:110px 0 50px;scroll-margin-top:60px}
+.era{position:relative;text-align:center;padding:110px 0 50px;scroll-margin-top:var(--navh,60px)}
 .era .badge{display:inline-grid;place-items:center;width:84px;height:84px;border-radius:50%;background:var(--bg);border:2px solid var(--era);color:var(--era);
   font-family:var(--display);font-weight:900;font-size:1.6rem;box-shadow:0 0 0 6px var(--bg),0 0 30px var(--era);position:relative;z-index:2;
   transform:scale(.4) rotate(-90deg);opacity:0;transition:all 1s cubic-bezier(.2,.9,.3,1.3)}
@@ -175,7 +188,7 @@ html{overflow-x:hidden}
 .finale h2{font-family:var(--display);font-size:clamp(2rem,5.5vw,3.6rem);line-height:1.05;margin:.3em 0;
   background:linear-gradient(180deg,#fff2c8,var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
 .finale p{font-size:1.2rem;max-width:640px;margin:0 auto 14px}
-.status{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:34px 0 10px}
+.status{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:34px 0 10px}
 .status div{border:1px solid var(--line);padding:16px 12px;background:rgba(0,0,0,.35)}
 .status small{display:block;font-family:var(--display);font-size:.6rem;letter-spacing:.2em;color:var(--parch-dim);margin-bottom:6px}
 .status strong{font-family:var(--display);color:var(--gold-hi);font-size:.95rem}
@@ -199,6 +212,17 @@ footer{position:relative;z-index:2;text-align:center;padding:30px 16px 50px;font
   .era blockquote{margin:0}
   .eranav .lbl{display:none}
   .eranav a{padding:7px 10px}
+}
+@media (max-width:600px){
+  .eranav{gap:4px;padding:6px 8px}
+  .eranav .tally{padding-right:8px;margin-right:2px;gap:4px}
+  .eranav .tally .lb{display:none}
+  .eranav a{padding:5px 7px;font-size:.66rem}
+  .eranav .step{width:26px;height:26px}
+  /* uma linha so: a tira de livros desliza na horizontal */
+  .eranav .chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none}
+  .eranav .chips::-webkit-scrollbar{display:none}
+  .eranav .chips a{flex:none}
 }
 
 /* ===== NARRAÇÃO ===== */
@@ -441,6 +465,7 @@ footer{position:relative;z-index:2;text-align:center;padding:30px 16px 50px;font
 </style>
 </head>
 <body>
+<canvas id="stars"></canvas>
 <canvas id="embers"></canvas>
 <div class="vignette"></div>
 <div class="progress" id="progress"></div>
@@ -476,7 +501,12 @@ footer{position:relative;z-index:2;text-align:center;padding:30px 16px 50px;font
   </section>
 
   <p class="legend reveal">Como ler as datas: <b>a.P.</b> = anos antes da abertura do Portal Negro · <b>Ano X</b> = anos depois dela · <b>≈</b> = data aproximada pelos estudiosos da Liga.</p>
-  <nav class="eranav" id="eranav"></nav>
+  <nav class="eranav" id="eranav" aria-label="Navegar entre os livros">
+    <button class="step" id="era-prev" type="button" aria-label="Livro anterior">&#8249;</button>
+    <span class="tally"><span class="lb">Livro</span><b id="era-n">&#8212;</b><span class="of" id="era-of">de VI</span></span>
+    <div class="chips" id="era-chips"></div>
+    <button class="step" id="era-next" type="button" aria-label="Pr&oacute;ximo livro">&#8250;</button>
+  </nav>
 
   <section class="timeline" id="timeline">
     <div class="spine"><div class="fill" id="spinefill"></div></div>
@@ -486,14 +516,15 @@ footer{position:relative;z-index:2;text-align:center;padding:30px 16px 50px;font
     <div class="portal"></div>
     <span class="when">≈ Ano 25 · Início de WoW Forever</span>
     <h2>A vez dos aventureiros</h2>
-    <p>Aqui terminam as anotações da Liga e começa a sua história, Cadu. Depois das guerras, das traições e dos sacrifícios, Azeroth respira por um instante. Mas, sob a Montanha Rocha Negra, o Senhor do Fogo ainda arde, e ninguém ainda ousou descer ao Núcleo Derretido.</p>
+    <p>Aqui terminam as anotações da Liga e começa a sua história. Depois das guerras, das traições e dos sacrifícios, Azeroth respira por um instante. Mas, sob a Montanha Rocha Negra, o Senhor do Fogo ainda arde, e ninguém ainda ousou descer ao Núcleo Derretido.</p>
     <div class="status">
+      <div><small>Ventobravo</small><strong>Rei Varian Wrynn desaparecido</strong></div>
       <div><small>Orgrimmar</small><strong>Thrall governa a Horda</strong></div>
       <div><small>Cidade Baixa</small><strong>Sylvana lidera os Renegados</strong></div>
       <div><small>Nortúndria</small><strong>Arthas ocupa o Trono de Gelo</strong></div>
       <div><small>Núcleo Derretido</small><strong>Ragnaros aguarda</strong></div>
     </div>
-    <p class="closing">Guardo a pena e deixo uma página em branco. Que o que você escrever nela honre os que vieram antes.<b>— Z. A., em nome da Liga dos Exploradores</b></p>
+    <p class="closing">Guardo a pena e deixo uma página em branco. Que o que você escrever nela honre os que vieram antes.<b>— <a class="za-link" href="https://worldofwarcraft.blizzard.com/pt-br/forever/us/armory/character/zeugades-anchoze" target="_blank" rel="noopener" title="Ver Zeugades Anchoze na Armaria do WoW Forever">Zeugades Anchoze</a>, em nome da Liga dos Exploradores</b></p>
   </section>
 </main>
 
@@ -736,12 +767,18 @@ const ERAS = [
    {w:"Fim de Reino dos Renegados", t:"O sacrifício de Garek e a entrada na Horda",
     p:"Garek invocou a Luz e sacrificou-se para conter o ataque de Naxxramas. Sylvana aproximou seu povo da Horda, e os Renegados passaram a integrar a facção.",
     who:["Garek Bandarion","Sylvana","Naxxramas","Horda"],
-    n:{k:"z",t:"Nota de Zeugades",x:"Um morto que ainda alcança a Luz. Confesso que esta página me fez rever muitas certezas."}}
+    n:{k:"z",t:"Nota de Zeugades",x:"Um morto que ainda alcança a Luz. Confesso que esta página me fez rever muitas certezas."}},
+   {w:"Em Ventobravo", t:"O pequeno rei e a sombra de Onyxia",
+    p:"Varian Wrynn desapareceu a caminho de Theramore. Aos dez anos, seu filho Anduin recebeu a coroa de Ventobravo. Bolvar Fordragon assumiu a regência, enquanto Onyxia, disfarçada de Lady Katrana Prestor, manipulava a corte.",
+    who:["Varian Wrynn","Anduin","Bolvar Fordragon","Onyxia","Lady Katrana Prestor"]}
   ]}
 ];
 
 const tl = document.getElementById('timeline');
 const nav = document.getElementById('eranav');
+const chips = document.getElementById('era-chips');
+const eraN = document.getElementById('era-n');
+document.getElementById('era-of').textContent = 'de ' + ERAS[ERAS.length - 1].n;
 
 const SPANS = {origens:"Era primordial → ≈ 10.000 a.P.", cisao:"≈ 10.000 a.P. → ≈ 6.800 a.P.", reinos:"≈ 2.800 a.P. → ≈ 230 a.P.",
   portal:"Ano 0 → ≈ Ano 19", terceira:"≈ Ano 20 → ≈ Ano 21", trono:"≈ Ano 21 → ≈ Ano 25"};
@@ -751,7 +788,7 @@ const YEARS = {
   reinos:["≈ 2.800 a.P.","Após 2.800 a.P.","Após 2.800 a.P.","≈ 975 a.P.","≈ 823 a.P.","≈ 230 a.P."],
   portal:["Antes do Ano 0","Ano 0","Anos 0–4","≈ Ano 4","Anos 4–6","≈ Ano 6","≈ Ano 6","≈ Ano 8","Anos 8–20","Anos 8–20","≈ Ano 19"],
   terceira:["≈ Ano 20","≈ Ano 20","≈ Ano 20","≈ Ano 20","≈ Ano 20","≈ Ano 20","≈ Ano 20","≈ Ano 21"],
-  trono:["≈ Ano 21","≈ Ano 21","≈ Ano 21","≈ Ano 21","≈ Ano 21","Anos 21–25","Anos 21–25","≈ Ano 25","≈ Ano 25"]
+  trono:["≈ Ano 21","≈ Ano 21","≈ Ano 21","≈ Ano 21","≈ Ano 21","Anos 21–25","Anos 21–25","≈ Ano 25","≈ Ano 25","≈ Ano 25"]
 };
 function yearCaption(y){
   if (/primordial/i.test(y)) return "Antes da contagem dos anos";
@@ -780,7 +817,7 @@ ERAS.forEach(era => {
   const a = document.createElement('a');
   a.href = '#' + era.id; a.dataset.era = era.id;
   a.innerHTML = `<span class="num">${era.n}</span><span class="lbl">${era.short}</span>`;
-  nav.appendChild(a);
+  chips.appendChild(a);
 
   const h = document.createElement('div');
   h.className = 'era'; h.id = era.id; h.dataset.era = era.id;
@@ -831,6 +868,12 @@ function setEra(id){
   root.style.setProperty('--accent-rgb', rgb);
   emberRGB = rgb.split(',').map(Number);
   nav.querySelectorAll('a').forEach(a => a.classList.toggle('on', a.dataset.era === id));
+  eraN.textContent = era ? era.n : (id === 'final' ? '✦' : '—');
+  const chip = chips.querySelector('a.on');
+  if (chip) chips.scrollLeft = chip.offsetLeft - chips.clientWidth / 2 + chip.offsetWidth / 2;
+  const at = ERAS.findIndex(x => x.id === id);
+  document.getElementById('era-prev').disabled = at === 0;
+  document.getElementById('era-next').disabled = id === 'final' || at === ERAS.length - 1;
   document.dispatchEvent(new CustomEvent('era:change', {detail: {id, color, rgb, era}}));
 }
 
@@ -842,6 +885,7 @@ function onScroll(){
   const total = document.documentElement.scrollHeight - vh;
   prog.style.width = (st / total * 100) + '%';
   const r = tl.getBoundingClientRect();
+  nav.classList.toggle('show', r.top < vh * .35);
   const p = Math.min(1, Math.max(0, (vh * .6 - r.top) / r.height));
   fill.style.height = (p * 100) + '%';
   let id = null;
@@ -852,34 +896,115 @@ function onScroll(){
 addEventListener('scroll', onScroll, {passive:true});
 addEventListener('resize', onScroll);
 
+/* saltar de livro em livro; corrige a mira se a pagina crescer durante o percurso */
+let jumpRun = 0;
+function jumpTo(id){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+  const run = ++jumpRun;
+  let last = -1, still = 0, fixes = 0;
+  (function settle(){
+    if (run !== jumpRun) return;                       // outro salto assumiu
+    const y = Math.round(scrollY);
+    if (y === last) still++; else { still = 0; last = y; }
+    if (still < 6) return requestAnimationFrame(settle);
+    const alvo = parseFloat(getComputedStyle(root).getPropertyValue('--navh')) || 60;
+    const off = el.getBoundingClientRect().top - alvo;
+    if (Math.abs(off) > 4 && fixes++ < 3){ scrollBy(0, off); still = 0; return requestAnimationFrame(settle); }
+  })();
+}
+function goBook(dir){
+  const at = ERAS.findIndex(x => x.id === currentEra);
+  let k;
+  if (currentEra === 'final') { if (dir > 0) return; k = ERAS.length - 1; }
+  else if (at < 0) k = 0;
+  else k = Math.min(ERAS.length - 1, Math.max(0, at + dir));
+  jumpTo(ERAS[k].id);
+}
+/* se a pessoa mexe na rolagem, o salto larga o controle na hora */
+['wheel','touchstart','keydown'].forEach(ev => addEventListener(ev, () => jumpRun++, {passive:true}));
+document.getElementById('era-prev').addEventListener('click', () => goBook(-1));
+document.getElementById('era-next').addEventListener('click', () => goBook(1));
+chips.addEventListener('click', e => {
+  const a = e.target.closest('a'); if (!a) return;
+  e.preventDefault();
+  jumpTo(a.dataset.era);
+});
+/* o salto respeita a altura real da barra fixa */
+function navHeight(){ root.style.setProperty('--navh', (nav.offsetHeight + 14) + 'px'); }
+navHeight(); addEventListener('resize', navHeight);
+onScroll();
+
 /* embers */
 const cv = document.getElementById('embers'), cx = cv.getContext('2d');
 let W, H, emberRGB = [217,168,74], parts = [];
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function size(){ W = cv.width = innerWidth * devicePixelRatio; H = cv.height = innerHeight * devicePixelRatio; cv.style.width = innerWidth+'px'; cv.style.height = innerHeight+'px'; }
 size(); addEventListener('resize', size);
-const N = Math.min(90, Math.floor(innerWidth / 14));
+const N = Math.min(360, Math.floor(innerWidth / 14) * 4);
+
+/* estrelas: pontos brancos fixos, desenhados uma vez (e a cada resize) */
+const sv = document.getElementById('stars'), stx = sv.getContext('2d');
+let SW, SH;
+const STARS = Array.from({length: Math.min(480, Math.round(innerWidth * innerHeight / 4500))}, () => ({
+  x: Math.random(), y: Math.random(),
+  r: Math.random() * .65 + .6,
+  a: Math.random() * .35 + .65,
+  ph: Math.random() * Math.PI * 2,                       // fase inicial do cintilar
+  w: Math.PI * 2 / (Math.random() * 3 + 1.5)             // um ciclo a cada 1,5 a 4,5 segundos
+}));
+function sizeStars(){
+  SW = sv.width = innerWidth * devicePixelRatio; SH = sv.height = innerHeight * devicePixelRatio;
+  sv.style.width = innerWidth + 'px'; sv.style.height = innerHeight + 'px';
+}
+function drawStars(){
+  const t = performance.now() / 1000;
+  stx.clearRect(0, 0, SW, SH);
+  stx.fillStyle = '#fff';
+  for (const s of STARS){
+    stx.globalAlpha = s.a * (.62 + .38 * Math.sin(t * s.w + s.ph));
+    stx.beginPath(); stx.arc(s.x * SW, s.y * SH, s.r * devicePixelRatio, 0, Math.PI * 2); stx.fill();
+  }
+  stx.globalAlpha = 1;
+}
+sizeStars(); drawStars();
+addEventListener('resize', () => { sizeStars(); drawStars(); });
 function spawn(p, fresh){
   p.x = Math.random() * W; p.y = fresh ? Math.random() * H : H + 20;
   p.r = (Math.random() * 1.8 + .6) * devicePixelRatio;
-  p.vy = -(Math.random() * .5 + .15) * devicePixelRatio;
+  p.vy = -(Math.random() * .25 + .075) * devicePixelRatio;
   p.sw = Math.random() * Math.PI * 2; p.life = Math.random() * .6 + .4;
   return p;
 }
 for (let i = 0; i < N; i++) parts.push(spawn({}, true));
 let cur = [...emberRGB];
+/* sprite da fagulha: um gradiente so, redesenhado apenas quando a cor da era muda */
+const SP = 64, sprite = document.createElement('canvas');
+sprite.width = sprite.height = SP;
+const sx = sprite.getContext('2d');
+let spriteC = '';
+function paintSprite(c){
+  sx.clearRect(0, 0, SP, SP);
+  const g = sx.createRadialGradient(SP/2, SP/2, 0, SP/2, SP/2, SP/2);
+  g.addColorStop(0, `rgba(${c},1)`); g.addColorStop(1, `rgba(${c},0)`);
+  sx.fillStyle = g; sx.fillRect(0, 0, SP, SP);
+  spriteC = c;
+}
 function tick(){
+  drawStars();
   cx.clearRect(0, 0, W, H);
   for (let k = 0; k < 3; k++) cur[k] += (emberRGB[k] - cur[k]) * .03;
   const c = cur.map(Math.round).join(',');
+  if (c !== spriteC) paintSprite(c);
   for (const p of parts){
-    p.y += p.vy; p.sw += .02; p.x += Math.sin(p.sw) * .35 * devicePixelRatio;
+    p.y += p.vy; p.sw += .01; p.x += Math.sin(p.sw) * .35 * devicePixelRatio;
     if (p.y < -20) spawn(p, false);
-    const a = p.life * Math.min(1, p.y / H + .2);
-    const g = cx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
-    g.addColorStop(0, `rgba(${c},${a})`); g.addColorStop(1, `rgba(${c},0)`);
-    cx.fillStyle = g; cx.beginPath(); cx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2); cx.fill();
+    const d = p.r * 8;
+    cx.globalAlpha = p.life * Math.min(1, p.y / H + .2);
+    cx.drawImage(sprite, p.x - d/2, p.y - d/2, d, d);
   }
+  cx.globalAlpha = 1;
   if (!reduce) requestAnimationFrame(tick);
 }
 tick();
