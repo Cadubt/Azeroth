@@ -78,3 +78,9 @@ aman-thul.webp     |  Aman’Thul, lider do Panteao dos Titas
 anacronos.webp     |  Anacronos, da Revoada Bronze
 anasterian.webp    |  Anasterian Andassol, rei de Quel’Thalas
 anduin.webp        |  Anduin Wrynn, o pequeno rei de Ventobravo
+antonidas.webp     |  Antonidas, arquimago do Kirin Tor
+anya.webp          |  Anya, patrulheira sombria dos Renegados
+anub-arak.webp     |  Anub’arak, o ultimo rei de Azjol-Nerub
+arquimonde.webp    |  Arquimonde, general da Legiao Ardente
+arthas.webp        |  Arthas Menethil, o Rei Lich
+azshara.webp       |  Azshara, rainha dos kaldorei
